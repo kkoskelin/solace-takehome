@@ -25,7 +25,7 @@ export default function Home() {
         searchTermPattern.test(advocate.lastName) ||
         searchTermPattern.test(advocate.city) ||
         searchTermPattern.test(advocate.degree) ||
-        advocate.specialties.find(el => searchTermPattern.test(el))
+        advocate.specialties.some(el => searchTermPattern.test(el))
       );
     });
     setFilteredAdvocates(filterResults);
