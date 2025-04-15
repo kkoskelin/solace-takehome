@@ -9,7 +9,6 @@ export default function Home() {
   const [filteredAdvocates, setFilteredAdvocates] = useState<Advocate[]>([]);
 
   useEffect(() => {
-    console.log("fetching advocates...");
     fetch("/api/advocates").then((response) => {
       response.json().then((jsonResponse) => {
         setAdvocates(jsonResponse.data);
@@ -18,79 +17,81 @@ export default function Home() {
     });
   }, []);
 
-  const onChange = e => {
-    const searchTerm = e.target.value;
-
-    document.getElementById("search-term").innerHTML = searchTerm;
-
-    console.log("filtering advocates...");
-    const filteredAdvocates = advocates.filter((advocate) => {
+  const applySearchTerm = (searchTermFromInput: string) => {
+    const searchTermPattern = new RegExp(searchTermFromInput.trim(), "i");
+    const filterResults = advocates.filter(advocate => {
       return (
-        advocate.firstName.includes(searchTerm) ||
-        advocate.lastName.includes(searchTerm) ||
-        advocate.city.includes(searchTerm) ||
-        advocate.degree.includes(searchTerm) ||
-        advocate.specialties.includes(searchTerm)
+        searchTermPattern.test(advocate.firstName) ||
+        searchTermPattern.test(advocate.lastName) ||
+        searchTermPattern.test(advocate.city) ||
+        searchTermPattern.test(advocate.degree) ||
+        advocate.specialties.some(el => searchTermPattern.test(el))
       );
     });
-
-    setFilteredAdvocates(filteredAdvocates);
-  };
-
-  const onClick = () => {
-    console.log(advocates);
-    setFilteredAdvocates(advocates);
+    setFilteredAdvocates(filterResults);
   };
 
   return (
-    <main style={{ margin: "24px" }}>
-      <h1>Solace Advocates</h1>
-      <br />
-      <br />
-      <div>
-        <p>Search</p>
-        <p>
-          Searching for: <span id="search-term"></span>
-        </p>
-        <input className="border border-black" type="search" value={searchTerm} onChange={onChange} />
-        <button onClick={onClick}>Reset Search</button>
-      </div>
-      <br />
-      <br />
-      <table>
-        <thead>
-          <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>City</th>
-            <th>Degree</th>
-            <th>Specialties</th>
-            <th>Years of Experience</th>
-            <th>Phone Number</th>
+    <main className="m-6">
+      <h1 className="text-xl font-bold">Solace Advocates</h1>
+      <form className="my-8" onSubmit={e => {
+        applySearchTerm(searchTerm);
+        e.preventDefault();
+      }}>
+        <label className="mr-1" htmlFor="search-term">Search:</label>
+        <input
+          className="border p-1 border-black rounded"
+          aria-describedby="search-hint"
+          id="search-term"
+          type="search"
+          value={searchTerm}
+          required
+          onChange={e => setSearchTerm(e.target.value)}
+        />
+        <button type="submit" className="ml-2 p-1 w-20 rounded border border-black bg-gray-200 active:bg-gray-300 ">Search</button>
+        <button type="reset" className="ml-2 p-1 w-20 rounded border border-black" onClick={() => {
+          setSearchTerm('');
+          setFilteredAdvocates(advocates);
+        }}>Reset</button>
+        <div className="mt-05 text-sm text-gray-700" id="search-hint">Search by first name, last name, city, degree, or specialty</div>
+      </form>
+      <table
+        className="border border-black w-full"
+      >
+        <thead className="bg-gray-200">
+          <tr className="border border-black">
+            <th className="px-1 py-1 border border-black align-top" scope="col">First Name</th>
+            <th className="px-1 py-1 border border-black align-top" scope="col">Last Name</th>
+            <th className="px-1 py-1 border border-black align-top" scope="col">City</th>
+            <th className="px-1 py-1 border border-black align-top" scope="col">Degree</th>
+            <th className="px-1 py-1 border border-black align-top" scope="col">Specialties</th>
+            <th className="px-1 py-1 border border-black align-top" scope="col">Years of Experience</th>
+            <th className="px-1 py-1 border border-black align-top" scope="col">Phone Number</th>
           </tr>
         </thead>
-        <tbody>
-          {filteredAdvocates.map(advocate => {
-            return (
-              <tr key={`advocate-${advocate.id}`}>
-                <td>{advocate.firstName}</td>
-                <td>{advocate.lastName}</td>
-                <td>{advocate.city}</td>
-                <td>{advocate.degree}</td>
-                <td>
-                  <ul>
-                  {advocate.specialties.map(specialty => (
+        <tbody className="border border-black">
+          {filteredAdvocates.map((advocate, idx) =>
+            <tr key={`advocate-${advocate.id}`} className={`border border-black ${idx % 2 !== 0 ? "bg-gray-100" : ""}`}>
+              <td className="px-1 py-1 border border-black align-top">{advocate.firstName}</td>
+              <td className="px-1 py-1 border border-black align-top">{advocate.lastName}</td>
+              <td className="px-1 py-1 border border-black align-top">{advocate.city}</td>
+              <td className="px-1 py-1 border border-black align-top">{advocate.degree}</td>
+              <td className="px-1 py-1 border border-black align-top">
+                {advocate.specialties.length === 0 && <span className="italic">(No specialties listed)</span>}
+                {advocate.specialties.length > 0 && (
+                  <ul className="list-inside list-disc">
+                  {advocate.specialties.map(specialty =>
                     <li key={`specialty-${advocate.id}-${specialty}`}>
                       {specialty}
-                      </li>
-                  ))}
+                    </li>
+                  )}
                   </ul>
-                </td>
-                <td>{advocate.yearsOfExperience}</td>
-                <td>{advocate.phoneNumber}</td>
-              </tr>
-            );
-          })}
+                )}
+              </td>
+              <td className="px-1 py-1 border border-black align-top text-right">{advocate.yearsOfExperience}</td>
+              <td className="px-1 py-1 border border-black align-top text-center">{advocate.phoneNumber}</td>
+            </tr>
+           )}
         </tbody>
       </table>
     </main>
