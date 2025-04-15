@@ -1,4 +1,4 @@
-## Solace Candidate Assignment
+# Solace Candidate Assignment
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
@@ -22,17 +22,16 @@ The app is configured to return a default list of advocates. This will allow you
 
 1. Feel free to use whatever configuration of postgres you like. The project is set up to use docker-compose.yml to set up postgres. The url is in .env.
 
-```bash
-docker compose up -d
-```
+  ```bash
+  docker compose up -d
+  ```
 
 2. Create a `solaceassignment` database.
-
 3. Push migration to the database
 
-```bash
-npx drizzle-kit push
-```
+  ```bash
+  npx drizzle-kit push
+  ```
 
 4. Seed the database
 
