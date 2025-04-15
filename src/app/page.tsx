@@ -33,7 +33,7 @@ export default function Home() {
 
   return (
     <main className="m-6">
-      <h1>Solace Advocates</h1>
+      <h1 className="text-xl font-bold">Solace Advocates</h1>
       <form className="my-8" onSubmit={e => {
         applySearchTerm(searchTerm);
         e.preventDefault();
@@ -48,12 +48,12 @@ export default function Home() {
           required
           onChange={e => setSearchTerm(e.target.value)}
         />
-        <button type="submit" className="ml-2 p-1 rounded border border-black bg-gray-200 active:bg-gray-300 ">Search</button>
-        <button type="reset" className="ml-2 p-1 rounded border border-black" onClick={() => {
+        <button type="submit" className="ml-2 p-1 w-20 rounded border border-black bg-gray-200 active:bg-gray-300 ">Search</button>
+        <button type="reset" className="ml-2 p-1 w-20 rounded border border-black" onClick={() => {
           setSearchTerm('');
           setFilteredAdvocates(advocates);
         }}>Reset</button>
-        <div className="mt-05 text-sm" id="search-hint">Search by first name, last name, city, degree, or specialty</div>
+        <div className="mt-05 text-sm text-gray-700" id="search-hint">Search by first name, last name, city, degree, or specialty</div>
       </form>
       <table
         className="border border-black w-full"
