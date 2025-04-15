@@ -77,7 +77,7 @@ export default function Home() {
               <td className="px-1 py-1 border border-black align-top">{advocate.city}</td>
               <td className="px-1 py-1 border border-black align-top">{advocate.degree}</td>
               <td className="px-1 py-1 border border-black align-top">
-                {advocate.specialties.length === 0 && <li>No specialties listed</li>}
+                {advocate.specialties.length === 0 && <span className="italic">(No specialties listed)</span>}
                 {advocate.specialties.length > 0 && (
                   <ul className="list-inside list-disc">
                   {advocate.specialties.map(specialty =>
